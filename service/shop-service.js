@@ -7,6 +7,17 @@ class ShopService {
     return categories;
   }
 
+  async getOneCategory(categoryId) {
+    const currentCategory = categories.find(
+      (category) => category.id === categoryId
+    );
+    if (!currentCategory) {
+      throw ApiError.NotFound("Такої категорії не існує");
+    }
+
+    return currentCategory;
+  }
+
   async getProducts(categoryId) {
     let filteredProducts = products;
 

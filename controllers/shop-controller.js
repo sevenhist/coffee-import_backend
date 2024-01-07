@@ -11,6 +11,17 @@ class ShopController {
     }
   }
 
+  async getOneCategory(req, res, next) {
+    try {
+      const { categoryId } = req.params;
+      const category = await shopService.getOneCategory(categoryId);
+
+      return res.json(category);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async getProducts(req, res, next) {
     try {
       const { categoryId } = req.query;
