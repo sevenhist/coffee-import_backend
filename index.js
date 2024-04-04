@@ -12,17 +12,13 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 // wie früher was
-// app.use(cors({
-//     credentials: true,
-//     origin: process.env.CLIENT_URL
-// }));
+app.use(cors({
+    credentials: true,
+    origin: process.env.CLIENT_URL
+}));
 
 //wie jetzt
-app.use(cors({
-    origin: ["https://deploy-mern-1whg.vercel.app"],
-    methods: ["POST", "GET"],
-    credentials: true
-}));
+
 app.use('/api', router);
 app.use(errorMiddleware);
 
