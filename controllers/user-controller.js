@@ -2,16 +2,16 @@ const userService = require('../service/user-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
 
+
 class UserController {
     async registration(req, res, next) {
         try {
-            console.log("BODY", req.body)
             const errors = validationResult(req);
             if(!errors.isEmpty()) {
                 return next(ApiError.BadRequest('Помилка при валідації', errors.array()));
             }
-            const {email, password} = req.body;
-            const userData = await userService.registration(email, password);
+            const {email, password, first_name, last_name} = req.body;
+            const userData = await userService.registration(email, password, first_name, last_name);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, 
                 httpOnly: true, secure: true, sameSite: 'none'});
             return res.json(userData);
@@ -19,9 +19,26 @@ class UserController {
             next(e);
         }
     }
+    async sendData(req, res, next) {
+        try {
+            const {refreshToken} = req.cookies;
+            const {last_name, first_name, phone_number, email, city, delivery, cart, activePay, totalPrice, dateInfo, timeInfo} = req.body
+            const userData = await userService.sendData(last_name, first_name, phone_number, email, city, delivery, cart, activePay, totalPrice, dateInfo, timeInfo, refreshToken);
+            return res.json(userData);
+        } catch (e) {
+            next(e);
+        }
+    }
+    async getHistory(req, res, next) {
+        try {
+            const historyArray = await userService.getHistory();
+            return res.json(historyArray);
+        } catch (e) {
+            next(e);
+        }
+    }
     async login(req, res, next) {
         try {
-            console.log("Login BODY", req.body)
             const {email, password} = req.body;
             const userData = await userService.login(email, password)
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
@@ -63,6 +80,29 @@ class UserController {
         try {
             const users = await userService.getAllUsers();
             return res.json(users);
+        } catch (e) {
+            next(e);
+        }
+    }
+    async setProfileInfo(req, res, next) {
+        try {
+            const {email, first_name, last_name} = req.body;
+            const user = await userService.setProfileInfo(email, first_name, last_name);
+            return res.json(user);
+        } catch (e) {
+            next(e);
+        }
+    }
+    async setProfilePasswords(req, res, next) {
+        try {
+            const errors = validationResult(req);
+            if(!errors.isEmpty()) {
+                return next(ApiError.BadRequest('Помилка при валідації', errors.array()));
+            }
+            const {refreshToken} = req.cookies;
+            const {new_password, password} = req.body;
+            const userData = await userService.setProfilePasswords(new_password, password, refreshToken); 
+            return res.json(userData);
         } catch (e) {
             next(e);
         }

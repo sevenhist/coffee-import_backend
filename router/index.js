@@ -16,10 +16,16 @@ router.post("/logout", userController.logout);
 router.get("/activate/:link", userController.activate);
 router.get("/refresh", userController.refresh);
 router.get("/users", authMiddleware, userController.getUsers);
+router.post("/cabinet/personal-information", userController.setProfileInfo);
+router.post("/cabinet/personal-information-passwords", userController.setProfilePasswords);
+router.post("/send-data", userController.sendData);
+router.get("/get-history", userController.getHistory);
+
 
 router.get("/categories", shopController.getCategories);
 router.get("/categories/:categoryId", shopController.getOneCategory);
 router.get("/products", shopController.getProducts);
+router.get("/top-products", shopController.getTopProducts);
 router.get("/products/:productId", shopController.getOneProduct);
 
 module.exports = router;

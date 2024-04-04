@@ -33,6 +33,15 @@ class ShopController {
     }
   }
 
+  async getTopProducts(req, res, next) {
+    try {
+      const products = await shopService.getTopProducts();
+      return res.json(products);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async getOneProduct(req, res, next) {
     try {
       const { productId } = req.params;

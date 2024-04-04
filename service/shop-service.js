@@ -30,6 +30,10 @@ class ShopService {
     return filteredProducts;
   }
 
+  async getTopProducts() {
+    return products.slice(0, 8)
+  }
+
   async getOneProduct(productId) {
     const currentProduct = products.find((product) => product.id === productId);
     if (!currentProduct) {
